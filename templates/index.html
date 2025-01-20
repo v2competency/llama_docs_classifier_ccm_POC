@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📄 AI Document Classifier</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            background: linear-gradient(120deg, #f8f9fa, #e9ecef);
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            max-width: 850px;
+            margin-top: 40px;
+        }
+
+        .card {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+
+        #log-container {
+            background: #ffffff;
+            padding: 15px;
+            height: 350px;
+            overflow-y: auto;
+            border-radius: 5px;
+            border: 2px solid #dee2e6;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+        }
+
+        .btn-primary {
+            width: 100%;
+            border-radius: 8px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            border: none;
+            transition: 0.3s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #0056b3, #003f7f);
+            transform: scale(1.02);
+        }
+
+        .log-entry {
+            padding: 6px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .log-warning {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .log-success {
+            color: #198754;
+        }
+
+        .card-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .processing-logs {
+            color: #c82333;
+            font-weight: bold;
+        }
+
+        .final-folder {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Input Form -->
+    <div class="card shadow">
+        <h3 class="card-title"><span>📂</span> Document Classification Tool</h3>
+        <form method="POST">
+            <label class="form-label">Enter Folder Path:</label>
+            <input type="text" name="folder_path" class="form-control" placeholder="D:\path\to\your\folder" required>
+            <button type="submit" class="btn btn-primary mt-3">🚀 Start Classification</button>
+        </form>
+    </div>
+
+    <!-- Processing Logs -->
+    <div class="card shadow mt-4">
+        <h5 class="card-title processing-logs">📌 Processing Logs:</h5>
+        <div id="log-container">⏳ Waiting for logs...</div>
+    </div>
+
+    <!-- Final Classified Folder -->
+    <div class="card shadow mt-4">
+        <h5 class="card-title final-folder">📁 Final Classified Folder:</h5>
+        <p id="final-folder" class="text-center">🔍 No folder created yet.</p>
+    </div>
+</div>
+
+<script>
+    function updateLogs() {
+        $.getJSON("/logs", function(data) {
+            let logs = data.logs.map(log => `<div class="log-entry">${log}</div>`).join("");
+            $("#log-container").html(logs);
+            $("#log-container").scrollTop($("#log-container")[0].scrollHeight);
+        });
+    }
+
+    function updateFinalFolder() {
+        $.getJSON("/final-folder", function(data) {
+            $("#final-folder").html(`<strong>📂 ${data.final_folder}</strong>`);
+        });
+    }
+
+    setInterval(updateLogs, 3000);
+    setInterval(updateFinalFolder, 5000);
+</script>
+
+</body>
+</html>
